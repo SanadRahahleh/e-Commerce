@@ -11,6 +11,6 @@ namespace ECommerce.Models
         public string ImageUrl { get; set; }
 
         // Relations
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
     }
 }

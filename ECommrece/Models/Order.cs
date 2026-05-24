@@ -16,10 +16,10 @@ namespace ECommerce.Models
         public DateTime CreatedAt { get; set; }
 
         // Relations
-        public User User { get; set; }
+        public User? User { get; set; }
 
-        public ICollection<OrderItem> OrderItems { get; set; }
+        public ICollection<OrderItem>? OrderItems { get; set; }
 
-        public Payment Payment { get; set; }
+        public Payment? Payment { get; set; }
     }
 }

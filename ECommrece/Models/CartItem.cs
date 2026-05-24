@@ -15,8 +15,8 @@ namespace ECommerce.Models
         public decimal PriceAtTime { get; set; }
 
         // Relations
-        public Cart Cart { get; set; }
+        public Cart? Cart { get; set; }
 
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
     }
 }

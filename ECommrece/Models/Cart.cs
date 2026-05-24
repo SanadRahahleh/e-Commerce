@@ -11,8 +11,8 @@ namespace ECommerce.Models
         public DateTime CreatedAt { get; set; }
 
         // Relations
-        public User User { get; set; }
+        public User? User { get; set; }
 
-        public ICollection<CartItem> CartItems { get; set; }
+        public ICollection<CartItem>? CartItems { get; set; }
     }
 }

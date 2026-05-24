@@ -17,8 +17,8 @@ namespace ECommerce.Models
         public DateTime CreatedAt { get; set; }
 
         // Relations
-        public User User { get; set; }
+        public User? User { get; set; }
 
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
     }
 }

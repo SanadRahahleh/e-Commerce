@@ -17,6 +17,6 @@ namespace ECommerce.Models
         public DateTime PaidAt { get; set; }
 
         // Relations
-        public Order Order { get; set; }
+        public Order? Order { get; set; }
     }
 }

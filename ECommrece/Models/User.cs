@@ -20,10 +20,10 @@ namespace ECommerce.Models
         public DateTime CreatedAt { get; set; }
 
         // Relations
-        public Cart Cart { get; set; }
+        public Cart? Cart { get; set; }
 
-        public ICollection<Order> Orders { get; set; }
+        public ICollection<Order>? Orders { get; set; }
 
-        public ICollection<Review> Reviews { get; set; }
+        public ICollection<Review>? Reviews { get; set; }
     }
 }

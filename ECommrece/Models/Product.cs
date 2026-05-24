@@ -21,14 +21,14 @@ namespace ECommrece.Models
         public DateTime CreatedAt { get; set; }
 
         // Relations
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
 
-        public ICollection<ProductImage> ProductImages { get; set; }
+        public ICollection<ProductImage>? ProductImages { get; set; }
 
-        public ICollection<CartItem> CartItems { get; set; }
+        public ICollection<CartItem>? CartItems { get; set; }
 
-        public ICollection<OrderItem> OrderItems { get; set; }
+        public ICollection<OrderItem>? OrderItems { get; set; }
 
-        public ICollection<Review> Reviews { get; set; }
+        public ICollection<Review>? Reviews { get; set; }
     }
 }
