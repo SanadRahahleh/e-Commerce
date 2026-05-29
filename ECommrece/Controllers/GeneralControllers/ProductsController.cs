@@ -3,7 +3,7 @@ using ECommrece.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ECommrece.Controllers
+namespace ECommerce.Controllers.GeneralControllers
 {
     [Route("api/[controller]")]
     [ApiController]

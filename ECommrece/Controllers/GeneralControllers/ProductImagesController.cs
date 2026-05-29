@@ -3,119 +3,116 @@ using ECommerce.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ECommerce.Controllers
+namespace ECommerce.Controllers.GeneralControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PaymentsController : ControllerBase
+    public class ProductImagesController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public PaymentsController(AppDbContext context)
+        public ProductImagesController(AppDbContext context)
         {
             _context = context;
         }
 
         ////////////////////////////////////////////////////////////
-        // GET ALL PAYMENTS
+        // GET ALL PRODUCT IMAGES
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var payments = await _context.Payments
-                .Include(p => p.Order)
+            var productImages = await _context.ProductImages
+                .Include(p => p.Product)
                 .ToListAsync();
 
-            return Ok(payments);
+            return Ok(productImages);
         }
 
         ////////////////////////////////////////////////////////////
-        // GET PAYMENT BY ID
+        // GET PRODUCT IMAGE BY ID
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var payment = await _context.Payments
-                .Include(p => p.Order)
+            var productImage = await _context.ProductImages
+                .Include(p => p.Product)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (payment == null)
+            if (productImage == null)
             {
-                return NotFound("Payment Not Found");
+                return NotFound("Product Image Not Found");
             }
 
-            return Ok(payment);
+            return Ok(productImage);
         }
 
         ////////////////////////////////////////////////////////////
-        // CREATE PAYMENT
+        // CREATE PRODUCT IMAGE
 
         [HttpPost]
-        public async Task<IActionResult> Create(Payment payment)
+        public async Task<IActionResult> Create(ProductImage productImage)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _context.Payments.AddAsync(payment);
+            await _context.ProductImages.AddAsync(productImage);
 
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(
                 nameof(GetById),
-                new { id = payment.Id },
-                payment
+                new { id = productImage.Id },
+                productImage
             );
         }
 
         ////////////////////////////////////////////////////////////
-        // UPDATE PAYMENT
+        // UPDATE PRODUCT IMAGE
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Payment updatedPayment)
+        public async Task<IActionResult> Update(int id, ProductImage updatedProductImage)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var payment = await _context.Payments.FindAsync(id);
+            var productImage = await _context.ProductImages.FindAsync(id);
 
-            if (payment == null)
+            if (productImage == null)
             {
-                return NotFound("Payment Not Found");
+                return NotFound("Product Image Not Found");
             }
 
-            payment.OrderID = updatedPayment.OrderID;
-            payment.Amount = updatedPayment.Amount;
-            payment.Method = updatedPayment.Method;
-            payment.Status = updatedPayment.Status;
-            payment.PaidAt = updatedPayment.PaidAt;
+            productImage.ProductID = updatedProductImage.ProductID;
+            productImage.ImageUrl = updatedProductImage.ImageUrl;
 
             await _context.SaveChangesAsync();
 
-            return Ok(payment);
+            return Ok(productImage);
         }
 
         ////////////////////////////////////////////////////////////
-        // DELETE PAYMENT
+        // DELETE PRODUCT IMAGE
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var payment = await _context.Payments.FindAsync(id);
+            var productImage = await _context.ProductImages.FindAsync(id);
 
-            if (payment == null)
+            if (productImage == null)
             {
-                return NotFound("Payment Not Found");
+                return NotFound("Product Image Not Found");
             }
 
-            _context.Payments.Remove(payment);
+            _context.ProductImages.Remove(productImage);
 
             await _context.SaveChangesAsync();
 
-            return Ok("Payment Deleted Successfully");
+            return Ok("Product Image Deleted Successfully");
         }
     }
 }
