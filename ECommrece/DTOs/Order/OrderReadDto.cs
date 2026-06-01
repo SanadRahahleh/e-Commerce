@@ -2,7 +2,7 @@
 {
     public class OrderReadDto
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         public decimal TotalAmount { get; set; }
 

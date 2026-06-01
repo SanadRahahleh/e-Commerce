@@ -2,8 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using ECommrece.Data;
 using ECommerce.Models;
+using ECommrece.DTOs.Category;
 
-namespace ECommerce.Controllers.GeneralControllers
+namespace ECommerce.Controllers.FControllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -21,7 +22,14 @@ namespace ECommerce.Controllers.GeneralControllers
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
-            var categories = await _context.Categories.ToListAsync();
+            var categories = await _context.Categories
+                .Select(c => new CategoryReadDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description
+                })
+                .ToListAsync();
 
             return Ok(categories);
         }
@@ -38,26 +46,48 @@ namespace ECommerce.Controllers.GeneralControllers
                 return NotFound("Category not found");
             }
 
-            return Ok(category);
+            var categoryDto = new CategoryReadDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description
+            };
+
+            return Ok(categoryDto);
         }
 
         ////////////////////////////////////////////////////////////
-        
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory(Category category)
+        public async Task<IActionResult> CreateCategory(CreateCategoryDto dto)
         {
-            await _context.Categories.AddAsync(category);
+            var category = new Category
+            {
+                Name = dto.Name,
+                Description = dto.Description
+            };
 
+            await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
 
-            return Ok(category);
+            var categoryDto = new CategoryReadDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description
+            };
+
+            return CreatedAtAction(
+                nameof(GetCategoryById),
+                new { id = category.Id },
+                categoryDto
+            );
         }
 
         ////////////////////////////////////////////////////////////
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, Category updatedCategory)
+        public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryDto dto)
         {
             var category = await _context.Categories.FindAsync(id);
 
@@ -66,12 +96,19 @@ namespace ECommerce.Controllers.GeneralControllers
                 return NotFound("Category not found");
             }
 
-            category.Name = updatedCategory.Name;
-            category.Description = updatedCategory.Description;
+            category.Name = dto.Name;
+            category.Description = dto.Description;
 
             await _context.SaveChangesAsync();
 
-            return Ok(category);
+            var categoryDto = new CategoryReadDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description
+            };
+
+            return Ok(categoryDto);
         }
 
         ////////////////////////////////////////////////////////////
@@ -90,7 +127,7 @@ namespace ECommerce.Controllers.GeneralControllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Category deleted successfully");
+            return NoContent();
         }
     }
 }

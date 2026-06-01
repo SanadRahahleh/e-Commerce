@@ -2,7 +2,7 @@
 {
     public class UserReadDto
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         public string FullName { get; set; }
 

@@ -1,9 +1,11 @@
 ﻿using ECommrece.Data;
+using ECommrece.DTOs.Product;
 using ECommrece.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ECommerce.Controllers.GeneralControllers
+namespace ECommerce.Controllers.FControllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -18,17 +20,19 @@ namespace ECommerce.Controllers.GeneralControllers
 
         ////////////////////////////////////////////////////////////
         // GET ALL PRODUCTS
-
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var products = await _context.Products
-                .Include(p => p.Category)
-                .Include(p => p.ProductImages)
-                .Include(p => p.CartItems)
-                .Include(p => p.OrderItems)
-                .Include(p => p.Reviews)
-                .ToListAsync();
+                .Select(p => new ProductReadDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    ImageUrl = p.ImageUrl,
+                })
+                    .ToListAsync();
+
 
             return Ok(products);
         }
@@ -40,12 +44,16 @@ namespace ECommerce.Controllers.GeneralControllers
         public async Task<IActionResult> GetById(int id)
         {
             var product = await _context.Products
-                .Include(p => p.Category)
-                .Include(p => p.ProductImages)
-                .Include(p => p.CartItems)
-                .Include(p => p.OrderItems)
-                .Include(p => p.Reviews)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .Where(p => p.Id == id)
+                .Select(p => new ProductReadDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    ImageUrl = p.ImageUrl,
+                    Description = p.Description
+                })
+                .FirstOrDefaultAsync();
 
             if (product == null)
             {
@@ -59,15 +67,34 @@ namespace ECommerce.Controllers.GeneralControllers
         // CREATE PRODUCT
 
         [HttpPost]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(CreateProductDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _context.Products.AddAsync(product);
+            var categoryExists = await _context.Categories
+                .AnyAsync(c => c.Id == dto.CategoryID);
 
+            if (!categoryExists)
+            {
+                return BadRequest("Category not found.");
+            }
+
+            var product = new Product
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Price = dto.Price,
+                StockQuantity = dto.StockQuantity,
+                ImageUrl = dto.ImageUrl,
+                IsActive = dto.IsActive,
+                CategoryID = dto.CategoryID,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(
@@ -81,13 +108,8 @@ namespace ECommerce.Controllers.GeneralControllers
         // UPDATE PRODUCT
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Product updatedProduct)
+        public async Task<IActionResult> Update(int id, UpdateProductDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var product = await _context.Products.FindAsync(id);
 
             if (product == null)
@@ -95,14 +117,21 @@ namespace ECommerce.Controllers.GeneralControllers
                 return NotFound("Product Not Found");
             }
 
-            product.Name = updatedProduct.Name;
-            product.Description = updatedProduct.Description;
-            product.Price = updatedProduct.Price;
-            product.StockQuantity = updatedProduct.StockQuantity;
-            product.ImageUrl = updatedProduct.ImageUrl;
-            product.IsActive = updatedProduct.IsActive;
-            product.CategoryID = updatedProduct.CategoryID;
-            product.CreatedAt = updatedProduct.CreatedAt;
+            var categoryExists = await _context.Categories
+                .AnyAsync(c => c.Id == dto.CategoryID);
+
+            if (!categoryExists)
+            {
+                return BadRequest("Category Not Found");
+            }
+
+            product.Name = dto.Name;
+            product.Description = dto.Description;
+            product.Price = dto.Price;
+            product.StockQuantity = dto.StockQuantity;
+            product.ImageUrl = dto.ImageUrl;
+            product.IsActive = dto.IsActive;
+            product.CategoryID = dto.CategoryID;
 
             await _context.SaveChangesAsync();
 
@@ -126,7 +155,7 @@ namespace ECommerce.Controllers.GeneralControllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Product Deleted Successfully");
+            return NoContent();
         }
     }
-}
+    }
