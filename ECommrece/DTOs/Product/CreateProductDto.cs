@@ -17,7 +17,8 @@ namespace ECommrece.DTOs.Product
         [Range(0, 10000)]
         public int StockQuantity { get; set; }
         public string ImageUrl { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; }  
+        [Required]
         public int CategoryID { get; set; }
 
     }

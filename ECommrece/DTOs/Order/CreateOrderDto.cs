@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ECommrece.DTOs.Order
+﻿namespace ECommrece.DTOs.Order
 {
     public class CreateOrderDto
     {
-        [Required]
-        public string ShippingAddress { get; set; }
+        public string Address { get; set; } = string.Empty;
     }
 }

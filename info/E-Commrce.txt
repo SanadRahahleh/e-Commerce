@@ -1,0 +1,219 @@
+     (Testing Controller)
+
+1) Auth --Done
+2) Categories --Done
+3) Products --Done
+4) Product Images
+5) CartItems Not enough stock available (Error) ------->Done
+6) Oder ---Done
+7) Carts --Done
+8) Payments --Done
+9) Reviews --Done
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# E-Commerce Business Flow Documentation
+
+## Overview
+
+The system follows a standard E-Commerce workflow where users can browse products, add them to a cart, create orders, and complete payments.
+
+---
+
+## 1. Authentication
+
+The user must login and receive a JWT Token.
+
+Flow:
+
+Login → JWT Token → Authorized Requests
+
+All protected endpoints require a valid JWT Token.
+
+---
+
+## 2. Product Browsing
+
+Users can view available products.
+
+Each product contains:
+
+* Name
+* Description
+* Price
+* StockQuantity
+* Category
+
+No database changes occur during product browsing.
+
+---
+
+## 3. Add Product To Cart
+
+Endpoint:
+
+POST /api/CartItems
+
+Business Rules:
+
+1. Product must exist.
+2. Requested quantity must be greater than zero.
+3. Requested quantity cannot exceed Product.StockQuantity.
+4. If the product already exists in the cart, update its quantity.
+5. If the product does not exist in the cart, create a new CartItem.
+
+Important:
+
+Adding a product to the cart does NOT decrease stock quantity.
+
+Reason:
+
+The customer has not completed the purchase yet.
+
+---
+
+## 4. Cart Management
+
+Each user owns a single cart.
+
+Relationship:
+
+User → Cart → CartItems
+
+The cart stores products the user intends to purchase.
+
+The cart is not considered a completed purchase.
+
+---
+
+## 5. Create Order (Checkout)
+
+Endpoint:
+
+POST /api/Orders
+
+Business Flow:
+
+1. Retrieve the user's cart.
+2. Ensure the cart is not empty.
+3. Validate product availability.
+4. Create a new Order.
+5. Convert CartItems into OrderItems.
+6. Calculate TotalPrice.
+7. Set Order Status = Pending.
+8. Remove all CartItems from the cart.
+9. Save changes.
+
+Result:
+
+CartItems → OrderItems
+
+The cart becomes empty after the order is created.
+
+The Cart itself remains in the database.
+
+Reason:
+
+The same cart will be reused for future purchases.
+
+---
+
+## 6. Payment Processing
+
+Endpoint:
+
+POST /api/Payments
+
+Business Flow:
+
+1. Verify the order exists.
+2. Verify the order belongs to the current user.
+3. Verify the order has not already been paid.
+4. Verify stock availability again.
+5. Decrease Product.StockQuantity.
+6. Create a Payment record.
+7. Update Order Status = Paid.
+8. Save changes.
+
+---
+
+## 7. Stock Management
+
+Stock is NOT reduced when:
+
+* Viewing products
+* Adding products to cart
+* Updating cart quantities
+
+Stock is reduced ONLY after successful payment.
+
+Reason:
+
+Products placed in a cart are not guaranteed purchases.
+
+---
+
+## Order Lifecycle
+
+Cart
+↓
+Add Products
+↓
+Create Order
+↓
+Convert CartItems → OrderItems
+↓
+Clear CartItems
+↓
+Order Status = Pending
+↓
+Create Payment
+↓
+Decrease Stock
+↓
+Order Status = Paid
+
+---
+
+## Database Relationships
+
+User
+├── Cart
+└── Orders
+
+Cart
+└── CartItems
+
+Order
+├── OrderItems
+└── Payment
+
+Product
+├── CartItems
+└── OrderItems
+
+---
+
+## Status Values
+
+Order Status:
+
+* Pending
+* Paid
+
+Payment Status:
+
+* Paid
+
+---
+
+## Key Design Decisions
+
+1. A user owns one reusable cart.
+2. CartItems are deleted after order creation.
+3. Orders preserve purchase history using OrderItems.
+4. Stock is reduced only after successful payment.
+5. Payment changes Order status from Pending to Paid.

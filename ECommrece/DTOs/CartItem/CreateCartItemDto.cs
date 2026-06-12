@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ECommrece.DTOs.Cart
+namespace ECommrece.DTOs.CartItem
 {
-    public class AddToCartDto
+    public class CreateCartItemDto
     {
+        [Required]
         public int ProductID { get; set; }
-
-        [Range(1, 100)]
+        [Required]  
         public int Quantity { get; set; }
     }
 }

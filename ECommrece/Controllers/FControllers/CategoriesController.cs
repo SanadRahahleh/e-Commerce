@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using ECommerce.Models;
 using ECommrece.Data;
-using ECommerce.Models;
 using ECommrece.DTOs.Category;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Controllers.FControllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -18,7 +20,7 @@ namespace ECommerce.Controllers.FControllers
         }
 
         ////////////////////////////////////////////////////////////
-
+        // GET ALL CATEGORIES
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
@@ -35,7 +37,7 @@ namespace ECommerce.Controllers.FControllers
         }
 
         ////////////////////////////////////////////////////////////
-
+        // GET CATEGORY BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
@@ -57,7 +59,8 @@ namespace ECommerce.Controllers.FControllers
         }
 
         ////////////////////////////////////////////////////////////
-
+        // CREATE NEW CATEGORY
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CreateCategoryDto dto)
         {
@@ -85,7 +88,8 @@ namespace ECommerce.Controllers.FControllers
         }
 
         ////////////////////////////////////////////////////////////
-
+        // UPDATE CATEGORY
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryDto dto)
         {
@@ -112,7 +116,8 @@ namespace ECommerce.Controllers.FControllers
         }
 
         ////////////////////////////////////////////////////////////
-
+        // DELETE CATEGORY
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {

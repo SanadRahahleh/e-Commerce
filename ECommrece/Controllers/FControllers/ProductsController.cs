@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Controllers.FControllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -39,7 +40,6 @@ namespace ECommerce.Controllers.FControllers
 
         ////////////////////////////////////////////////////////////
         // GET PRODUCT BY ID
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -65,7 +65,7 @@ namespace ECommerce.Controllers.FControllers
 
         ////////////////////////////////////////////////////////////
         // CREATE PRODUCT
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateProductDto dto)
         {
@@ -106,7 +106,7 @@ namespace ECommerce.Controllers.FControllers
 
         ////////////////////////////////////////////////////////////
         // UPDATE PRODUCT
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateProductDto dto)
         {
@@ -140,7 +140,7 @@ namespace ECommerce.Controllers.FControllers
 
         ////////////////////////////////////////////////////////////
         // DELETE PRODUCT
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

@@ -25,7 +25,7 @@ namespace ECommerce.Controllers.FControllers
             _configuration = configuration;
         }
         ////////////////////////////////////////////////////////////////////////////////////
-
+        // Signup
         [HttpPost("Signup")]
         public async Task<IActionResult> Signup(CreateUserDto dto)
         {
@@ -67,7 +67,7 @@ namespace ECommerce.Controllers.FControllers
         }
 
         ////////////////////////////////////////////////////////////////////////////////////
-
+        // Login
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginUserDto loginDto)
         {
@@ -107,8 +107,6 @@ namespace ECommerce.Controllers.FControllers
                 Role = user.Role
             });
         }
-        ////////////////////////////////////////////////////////////////////////////////////
-
         private string GenerateJwtToken(User user)
         {
             var claims = new[]

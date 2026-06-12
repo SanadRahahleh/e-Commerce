@@ -1,13 +1,14 @@
-﻿namespace ECommrece.DTOs.Cart
+﻿using ECommrece.DTOs.CartItem;
+
+namespace ECommrece.DTOs.Cart
 {
     public class CartReadDto
     {
-        public int ProductID { get; set; }
+        public int Id { get; set; }
 
-        public string ProductName { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        public decimal PriceAtTime { get; set; }
-
-        public int Quantity { get; set; }
+        public List<CartItemReadDto> Items { get; set; }
+            = new();
     }
 }

@@ -14,7 +14,7 @@ namespace ECommerce.Models
 
         public string Comment { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Relations
         public User? User { get; set; }

@@ -4,7 +4,7 @@ namespace ECommrece.DTOs.Product
 {
     public class UpdateProductDto
     {
-        [Required]
+        
         [MaxLength(100)]
         public string Name { get; set; }
 
