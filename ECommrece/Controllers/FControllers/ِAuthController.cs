@@ -1,4 +1,4 @@
-﻿using ECommerce.Models;
+using ECommerce.Models;
 using ECommrece.Data;
 using ECommrece.DTOs.User;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +47,10 @@ namespace ECommerce.Controllers.FControllers
                 FullName = dto.FullName,
                 Email = dto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                Role = "Customer"
+                Phone = dto.Phone,
+                Address = dto.Address,
+                Role = "Customer",
+                CreatedAt = DateTime.UtcNow
             };
 
             await _context.Users.AddAsync(user);
@@ -62,7 +65,9 @@ namespace ECommerce.Controllers.FControllers
                 UserId = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
-                Role = user.Role
+                Role = user.Role,
+                Phone = user.Phone,
+                Address = user.Address
             });
         }
 
@@ -104,9 +109,13 @@ namespace ECommerce.Controllers.FControllers
                 UserId = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
-                Role = user.Role
+                Role = user.Role,
+                Phone = user.Phone,
+                Address = user.Address
             });
         }
+
+
         private string GenerateJwtToken(User user)
         {
             var claims = new[]
@@ -129,7 +138,10 @@ namespace ECommerce.Controllers.FControllers
                 new Claim(
                     ClaimTypes.Role,
                     user.Role
-                )
+                ),
+
+                new Claim("phone", user.Phone ?? ""),
+                new Claim("address", user.Address ?? "")
             };
 
             var key = new SymmetricSecurityKey(

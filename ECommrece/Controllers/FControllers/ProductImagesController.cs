@@ -1,9 +1,12 @@
-﻿using ECommerce.DTOs.ProductImage;
+using ECommerce.DTOs.ProductImage;
 using ECommerce.Models;
 using ECommrece.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ECommerce.Controllers.FControllers
 {
@@ -21,6 +24,7 @@ namespace ECommerce.Controllers.FControllers
 
         ////////////////////////////////////////////////////////////
         // GET ALL PRODUCT IMAGES
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -36,8 +40,30 @@ namespace ECommerce.Controllers.FControllers
             return Ok(productImages);
         }
 
+
+        ////////////////////////////////////////////////////////////
+        // GET PRODUCT IMAGES BY PRODUCT ID
+        [AllowAnonymous]
+        [HttpGet("product/{productId}")]
+        public async Task<IActionResult> GetByProductId(int productId)
+        {
+            var productImages = await _context.ProductImages
+                .Where(p => p.ProductID == productId)
+                .Select(p => new ProductImageReadDto
+                {
+                    Id = p.Id,
+                    ProductID = p.ProductID,
+                    ImageUrl = p.ImageUrl
+                })
+                .ToListAsync();
+
+            return Ok(productImages);
+        }
+
+
         ////////////////////////////////////////////////////////////
         // GET PRODUCT IMAGE BY ID
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -59,9 +85,9 @@ namespace ECommerce.Controllers.FControllers
             return Ok(productImage);
         }
 
+
         ////////////////////////////////////////////////////////////
         // CREATE PRODUCT IMAGE
-
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateProductImageDto dto)
@@ -78,7 +104,6 @@ namespace ECommerce.Controllers.FControllers
             };
 
             await _context.ProductImages.AddAsync(productImage);
-
             await _context.SaveChangesAsync();
 
             var readDto = new ProductImageReadDto
@@ -95,19 +120,19 @@ namespace ECommerce.Controllers.FControllers
             );
         }
 
+
         ////////////////////////////////////////////////////////////
         // UPDATE PRODUCT IMAGE
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id,UpdateProductImageDto dto)
+        public async Task<IActionResult> Update(int id, UpdateProductImageDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var productImage =
-                await _context.ProductImages.FindAsync(id);
+            var productImage = await _context.ProductImages.FindAsync(id);
 
             if (productImage == null)
             {
@@ -119,8 +144,9 @@ namespace ECommerce.Controllers.FControllers
 
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(new { message = "Product Image Updated Successfully" });
         }
+
 
         ////////////////////////////////////////////////////////////
         // DELETE PRODUCT IMAGE
@@ -128,8 +154,7 @@ namespace ECommerce.Controllers.FControllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var productImage = await _context.ProductImages
-                .FindAsync(id);
+            var productImage = await _context.ProductImages.FindAsync(id);
 
             if (productImage == null)
             {
@@ -137,10 +162,9 @@ namespace ECommerce.Controllers.FControllers
             }
 
             _context.ProductImages.Remove(productImage);
-
             await _context.SaveChangesAsync();
 
-            return Ok("Product Image Deleted Successfully");
+            return Ok(new { message = "Product Image Deleted Successfully" });
         }
     }
 }

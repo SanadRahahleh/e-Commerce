@@ -1,4 +1,4 @@
-﻿namespace ECommrece.DTOs.Product
+namespace ECommrece.DTOs.Product
 {
     public class ProductReadDto
     {
@@ -10,5 +10,8 @@
 
         public string Description { get; set; }
         public string ImageUrl { get; set; }
+        public int CategoryID { get; set; }
+        public int StockQuantity { get; set; }
+        public bool IsActive { get; set; }
     }
 }

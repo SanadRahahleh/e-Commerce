@@ -1,4 +1,4 @@
-﻿namespace ECommrece.DTOs.User
+namespace ECommrece.DTOs.User
 {
     public class UserReadDto
     {
@@ -7,5 +7,13 @@
         public string FullName { get; set; }
 
         public string Email { get; set; }
+
+        public string Role { get; set; }
+
+        public string? Phone { get; set; }
+
+        public string? Address { get; set; }
+
+        public DateTime CreatedAt { get; set; }
     }
-}
+}

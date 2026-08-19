@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using ECommerce.Models;
 using ECommrece.Data;
 using ECommrece.DTOs.CartItem;
@@ -81,7 +81,7 @@ namespace ECommerce.Controllers.GeneralControllers
 
                 await _context.SaveChangesAsync();
 
-                return Ok("Quantity Updated");
+                return Ok(new { Message = "Quantity Updated" });
             }
 
             var cartItem = new CartItem
@@ -94,7 +94,7 @@ namespace ECommerce.Controllers.GeneralControllers
             await _context.CartItems.AddAsync(cartItem);
             await _context.SaveChangesAsync();
 
-            return Ok("Product Added To Cart");
+            return Ok(new { Message = "Product Added To Cart" });
         }
 
 
@@ -126,7 +126,7 @@ namespace ECommerce.Controllers.GeneralControllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Quantity Updated Successfully");
+            return Ok(new { Message = "Quantity Updated Successfully" });
         }
 
 
@@ -153,7 +153,7 @@ namespace ECommerce.Controllers.GeneralControllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Cart Item Deleted Successfully");
+            return Ok(new { Message = "Cart Item Deleted Successfully" });
         }
     }
 }

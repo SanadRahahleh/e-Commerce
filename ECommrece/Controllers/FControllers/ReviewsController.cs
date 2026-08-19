@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using ECommerce.Models;
 using ECommrece.Data;
 using ECommrece.DTOs.Review;
@@ -19,7 +19,8 @@ namespace ECommerce.Controllers.FControllers
         {
             _context = context;
         }
-
+        ////////////////////////////////////////////////////////////
+        /// CREATE REVIEW
         [HttpPost]
         public async Task<IActionResult> Create(CreateReviewDto dto)
         {
@@ -61,10 +62,12 @@ namespace ECommerce.Controllers.FControllers
             await _context.Reviews.AddAsync(review);
             await _context.SaveChangesAsync();
 
-            return Ok("Review Added Successfully");
+            return Ok(new { message = "Review Added Successfully" });
         }
 
 
+        ////////////////////////////////////////////////////////////
+        /// GET REVIEWS FOR A PRODUCT
         [AllowAnonymous]
         [HttpGet("product/{productId}")]
         public async Task<IActionResult> GetProductReviews(int productId)
@@ -86,6 +89,8 @@ namespace ECommerce.Controllers.FControllers
         }
 
 
+        ////////////////////////////////////////////////////////////
+        /// DELETE REVIEW
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -106,7 +111,7 @@ namespace ECommerce.Controllers.FControllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Review Deleted Successfully");
+            return Ok(new { message = "Review Deleted Successfully" });
         }
     }
 }

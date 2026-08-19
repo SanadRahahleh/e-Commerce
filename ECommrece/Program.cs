@@ -14,7 +14,18 @@ builder.Services.AddControllers()
             ReferenceHandler.IgnoreCycles;
     });
 
- builder.Services.AddAuthentication(options =>
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") 
+              .AllowAnyMethod()                     
+              .AllowAnyHeader()                     
+              .AllowCredentials();                 
+    });
+});
+
+builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme =
         JwtBearerDefaults.AuthenticationScheme;
@@ -22,8 +33,8 @@ builder.Services.AddControllers()
     options.DefaultChallengeScheme =
         JwtBearerDefaults.AuthenticationScheme;
 })
- .AddJwtBearer(options =>
- {
+.AddJwtBearer(options =>
+{
     options.TokenValidationParameters =
         new TokenValidationParameters
         {
@@ -45,24 +56,36 @@ builder.Services.AddControllers()
                     )
                 )
         };
- });
-// Add services to the container.
-
-builder.Services.AddControllers();
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-
 builder.Services.AddOpenApi();
 
 
 var app = builder.Build();
-app.UseAuthentication();
 
-// Configure the HTTP request pipeline.
+// Seed the database at startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        DbSeeder.SeedAsync(context).GetAwaiter().GetResult();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
+
+app.UseCors("AllowAngular");
+
+app.UseAuthentication();
 
 if (app.Environment.IsDevelopment())
 {

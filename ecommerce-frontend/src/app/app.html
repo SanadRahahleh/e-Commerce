@@ -1,0 +1,19 @@
+<div class="app-container">
+  <app-navbar></app-navbar>
+  
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <app-footer></app-footer>
+</div>
+
+<!-- Global Toasts -->
+<div class="toast-container">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div class="toast" [class]="'toast-' + toast.type">
+      <span>{{ toast.message }}</span>
+      <button class="toast-close" (click)="toastService.remove(toast.id)">&times;</button>
+    </div>
+  }
+</div>

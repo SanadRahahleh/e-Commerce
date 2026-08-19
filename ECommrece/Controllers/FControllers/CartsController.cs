@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using ECommrece.Data;
 using ECommrece.DTOs.Cart;
 using ECommrece.DTOs.CartItem;
@@ -86,7 +86,7 @@ namespace ECommerce.Controllers.FControllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Cart Cleared Successfully");
+            return Ok(new { Message = "Cart Cleared Successfully" });
         }
     }
 }

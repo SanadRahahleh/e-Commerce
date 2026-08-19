@@ -217,3 +217,74 @@ Payment Status:
 3. Orders preserve purchase history using OrderItems.
 4. Stock is reduced only after successful payment.
 5. Payment changes Order status from Pending to Paid.
+
+
+
+	(Reviews) 
+Overview
+
+The Reviews module allows customers to rate products and share feedback based on their experience.
+
+Each review is associated with:
+
+One User
+One Product
+
+A review contains:
+
+Rating (1 to 5)
+Comment
+Creation Date
+Business Rules
+Create Review
+
+Endpoint:
+
+POST /api/reviews
+
+Rules:
+
+User must be authenticated.
+Product must exist.
+Rating must be between 1 and 5.
+A user can review the same product only once.
+Review is linked to the current authenticated user.
+
+
+Get Reviews
+
+Endpoint:
+
+GET /api/reviews
+
+Purpose:
+
+Retrieve all reviews in the system.
+
+Returned Information:
+
+Review ID
+User Name
+Rating
+Comment
+Created Date
+Delete Review
+
+Endpoint:
+
+DELETE /api/reviews/{id}
+
+Rules:
+
+User can delete only their own review.
+Review must exist.
+
+
+
+// front-end Operation
+cd C:\Users\user\OneDrive\Desktop\ecommerce-frontend
+npm start
+
+// back-end Operation
+C:\Users\user\OneDrive\Desktop\ECommrece\ECommrece
+dotnet run

@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using ECommerce.Models;
 using ECommrece.Data;
 using ECommrece.DTOs.Order;
@@ -20,6 +20,7 @@ namespace ECommerce.Controllers.FControllers
         {
             _context = context;
         }
+
 
         ////////////////////////////////////////////////////////////
         // CHECKOUT
@@ -59,6 +60,19 @@ namespace ECommerce.Controllers.FControllers
                 }
             }
 
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                if (!string.IsNullOrEmpty(dto.Phone))
+                {
+                    user.Phone = dto.Phone;
+                }
+                if (!string.IsNullOrEmpty(dto.Address))
+                {
+                    user.Address = dto.Address;
+                }
+            }
+
             decimal totalPrice = 0;
 
             var order = new Order
@@ -71,6 +85,7 @@ namespace ECommerce.Controllers.FControllers
 
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
+
 
             foreach (var item in cart.CartItems)
             {
@@ -104,6 +119,7 @@ namespace ECommerce.Controllers.FControllers
 
         ////////////////////////////////////////////////////////////
         // GET MY ORDERS
+
 
         [HttpGet]
         public async Task<IActionResult> GetMyOrders()
@@ -141,7 +157,6 @@ namespace ECommerce.Controllers.FControllers
 
             return Ok(result);
         }
-
         ////////////////////////////////////////////////////////////
         // GET ORDER BY ID
         [HttpGet("{id}")]
@@ -184,6 +199,69 @@ namespace ECommerce.Controllers.FControllers
             };
 
             return Ok(result);
+        }
+
+
+        ////////////////////////////////////////////////////////////
+        // GET ALL ORDERS (Admin Only)
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            var orders = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .ToListAsync();
+
+            var result = orders.Select(order =>
+                new OrderReadDto
+                {
+                    Id = order.Id,
+                    Address = order.Address,
+                    Status = order.Status,
+                    TotalPrice = order.TotalPrice,
+                    CreatedAt = order.CreatedAt,
+
+                    Items = order.OrderItems!
+                        .Select(item =>
+                            new OrderItemReadDto
+                            {
+                                Id = item.Id,
+                                ProductID = item.ProductID,
+                                ProductName = item.Product!.Name,
+                                Quantity = item.Quantity,
+                                PriceAtTime = item.PriceAtTime
+                            })
+                        .ToList()
+                });
+
+            return Ok(result);
+        }
+
+
+        ////////////////////////////////////////////////////////////
+        // UPDATE ORDER STATUS (Admin Only)
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string status)
+        {
+            var order = await _context.Orders.FindAsync(id);
+
+            if (order == null)
+            {
+                return NotFound("Order Not Found");
+            }
+
+            var allowedStatuses = new List<string> { "Pending", "Processing", "Shipped", "Delivered", "Cancelled" };
+            if (!allowedStatuses.Contains(status))
+            {
+                return BadRequest("Invalid Status Value");
+            }
+
+            order.Status = status;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Order Status Updated Successfully", Status = order.Status });
         }
     }
 }

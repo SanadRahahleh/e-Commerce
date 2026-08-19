@@ -1,7 +1,8 @@
-﻿namespace ECommrece.DTOs.Order
+namespace ECommrece.DTOs.Order
 {
     public class CreateOrderDto
     {
         public string Address { get; set; } = string.Empty;
+        public string? Phone { get; set; }
     }
-}
+}

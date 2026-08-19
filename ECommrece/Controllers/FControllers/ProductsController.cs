@@ -1,4 +1,4 @@
-﻿using ECommrece.Data;
+using ECommrece.Data;
 using ECommrece.DTOs.Product;
 using ECommrece.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +21,7 @@ namespace ECommerce.Controllers.FControllers
 
         ////////////////////////////////////////////////////////////
         // GET ALL PRODUCTS
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -31,6 +32,10 @@ namespace ECommerce.Controllers.FControllers
                     Name = p.Name,
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
+                    CategoryID = p.CategoryID,
+                    Description = p.Description,
+                    StockQuantity = p.StockQuantity,
+                    IsActive = p.IsActive
                 })
                     .ToListAsync();
 
@@ -38,8 +43,10 @@ namespace ECommerce.Controllers.FControllers
             return Ok(products);
         }
 
+
         ////////////////////////////////////////////////////////////
         // GET PRODUCT BY ID
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -51,7 +58,10 @@ namespace ECommerce.Controllers.FControllers
                     Name = p.Name,
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
-                    Description = p.Description
+                    Description = p.Description,
+                    CategoryID = p.CategoryID,
+                    StockQuantity = p.StockQuantity,
+                    IsActive = p.IsActive
                 })
                 .FirstOrDefaultAsync();
 
@@ -62,6 +72,7 @@ namespace ECommerce.Controllers.FControllers
 
             return Ok(product);
         }
+
 
         ////////////////////////////////////////////////////////////
         // CREATE PRODUCT
@@ -104,6 +115,7 @@ namespace ECommerce.Controllers.FControllers
             );
         }
 
+
         ////////////////////////////////////////////////////////////
         // UPDATE PRODUCT
         [Authorize(Roles = "Admin")]
@@ -137,6 +149,7 @@ namespace ECommerce.Controllers.FControllers
 
             return Ok(product);
         }
+
 
         ////////////////////////////////////////////////////////////
         // DELETE PRODUCT

@@ -1,4 +1,4 @@
-﻿using ECommerce.Models;
+using ECommerce.Models;
 using ECommrece.Data;
 using ECommrece.DTOs.Category;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +21,7 @@ namespace ECommerce.Controllers.FControllers
 
         ////////////////////////////////////////////////////////////
         // GET ALL CATEGORIES
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
@@ -38,6 +39,7 @@ namespace ECommerce.Controllers.FControllers
 
         ////////////////////////////////////////////////////////////
         // GET CATEGORY BY ID
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
@@ -67,7 +69,7 @@ namespace ECommerce.Controllers.FControllers
             var category = new Category
             {
                 Name = dto.Name,
-                Description = dto.Description
+                Description = dto.Description ?? string.Empty
             };
 
             await _context.Categories.AddAsync(category);
@@ -101,7 +103,7 @@ namespace ECommerce.Controllers.FControllers
             }
 
             category.Name = dto.Name;
-            category.Description = dto.Description;
+            category.Description = dto.Description ?? string.Empty;
 
             await _context.SaveChangesAsync();
 
