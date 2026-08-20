@@ -4,8 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { LoginRequest, LoginResponse, SignupRequest, User } from '../models';
 
-export const API_URL = 'https://localhost:7285/api';
-
+export const API_URL = 'https://ecommerce-backend-kgak.onrender.com/api';
 @Injectable({
   providedIn: 'root'
 })
