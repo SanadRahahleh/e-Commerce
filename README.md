@@ -1,38 +1,38 @@
 # E-Commerce Platform
 
-منصة تجارة إلكترونية كاملة تتكوّن من واجهة أمامية مبنية باستخدام Angular وواجهة خلفية REST API مبنية باستخدام ASP.NET Core 9.0. يتيح المشروع للمستخدمين استعراض المنتجات والتصنيفات، إنشاء حساب وتسجيل الدخول، إدارة سلة التسوق، إنشاء الطلبات، تنفيذ الدفع، وكتابة تقييمات للمنتجات، مع لوحة تحكم للإدارة.
+A full-stack e-commerce platform composed of an Angular frontend and an ASP.NET Core 9.0 REST API backend. The project allows users to browse products and categories, register and log in, manage a shopping cart, create orders, process payments, and submit product reviews, while also offering an admin dashboard for management tasks.
 
-> **حالة المشروع:** يحتوي المستودع على تطبيق متكامل للتجربة والتطوير، مع طبقات المصادقة والمنتجات والسلة والطلبات والدفع والتقييمات ولوحة الإدارة.
+> Project status: this repository contains a working full-stack e-commerce application with authentication, catalog, cart, order management, payments, product reviews, and admin features.
 
-## المزايا الرئيسية
+## Key Features
 
-### للمستخدم
+### For Users
 
-- إنشاء حساب وتسجيل الدخول باستخدام JWT.
-- استعراض المنتجات والتصنيفات.
-- عرض تفاصيل المنتج وصوره ومراجعاته.
-- إضافة المنتجات إلى السلة وتعديل الكميات وحذف العناصر.
-- التحقق من توفر المخزون عند التعامل مع السلة والطلب.
-- إنشاء طلب من محتويات السلة.
-- الدفع وتحديث حالة الطلب إلى `Paid`.
-- عرض الطلبات وتفاصيل كل طلب.
-- إضافة تقييم للمنتج وحذفه من قبل صاحبه.
+- User registration and login using JWT authentication.
+- Browse products and categories.
+- View product details, images, and reviews.
+- Add products to the cart, update quantities, and remove items.
+- Validate inventory when adding items or checking out.
+- Create an order from cart contents.
+- Process payment and mark the order as `Paid`.
+- View order history and order details.
+- Add and delete product reviews owned by the authenticated user.
 
-### للإدارة
+### For Admins
 
-- لوحة تحكم محمية بصلاحيات المسؤول.
-- إدارة المنتجات.
-- إدارة التصنيفات.
-- إدارة الطلبات.
-- إدارة المستخدمين.
+- Protected admin dashboard.
+- Manage products.
+- Manage categories.
+- Manage orders.
+- Manage users.
 
-## سير العمل التجاري
+## Business Flow
 
-1. يسجّل المستخدم الدخول ويحصل على JWT token.
-2. يتصفح المنتجات ويضيف ما يريد إلى السلة.
-3. لا يتم تخفيض المخزون عند إضافة المنتج إلى السلة؛ لأن السلة لا تمثل عملية شراء مكتملة.
-4. عند تنفيذ checkout يتم تحويل `CartItems` إلى `OrderItems`، حساب إجمالي الطلب، تفريغ عناصر السلة، وإنشاء الطلب بحالة `Pending`.
-5. عند الدفع يتم التحقق من الطلب والمستخدم والمخزون، ثم تخفيض المخزون وإنشاء سجل الدفع وتغيير حالة الطلب إلى `Paid`.
+1. The user logs in and receives a JWT token.
+2. The user browses products and adds desired items to the cart.
+3. Stock is not reduced when items are added to the cart, because the cart does not represent a completed purchase.
+4. During checkout, `CartItems` are converted into `OrderItems`, the total is calculated, cart items are cleared, and an order is created in `Pending` status.
+5. During payment, the system validates the user, order, and stock, reduces product stock, creates a payment record, and updates order status to `Paid`.
 
 ```text
 User
@@ -51,90 +51,91 @@ Order
  └── Payment
 ```
 
-## التقنية المستخدمة
+## Tech Stack
 
-- **Backend:** C#، ASP.NET Core 9.0 Web API.
-- **Frontend:** Angular 20، TypeScript، RxJS.
-- **Database:** Microsoft SQL Server.
-- **ORM:** Entity Framework Core 9 مع `Microsoft.EntityFrameworkCore.SqlServer`.
-- **Authentication:** JWT Bearer Authentication.
-- **Password hashing:** BCrypt.Net-Next.
-- **API documentation:** ASP.NET Core OpenAPI.
-- **Containerization:** Docker باستخدام صور .NET SDK وASP.NET Runtime 9.0.
-- **Testing frontend:** Jasmine وKarma.
+- **Backend:** C#, ASP.NET Core 9.0 Web API
+- **Frontend:** Angular 20, TypeScript, RxJS
+- **Database:** Microsoft SQL Server
+- **ORM:** Entity Framework Core 9 with `Microsoft.EntityFrameworkCore.SqlServer`
+- **Authentication:** JWT Bearer authentication
+- **Password hashing:** BCrypt.Net-Next
+- **API documentation:** ASP.NET Core OpenAPI
+- **Containerization:** Docker using .NET SDK and ASP.NET runtime images
+- **Frontend testing:** Jasmine and Karma
 
-## بنية المشروع
+## Project Structure
 
 ```text
 .
 ├── ECommrece.sln                 # Visual Studio solution
-├── Dockerfile                    # بناء وتشغيل Backend داخل Docker
-├── SQLQuery1.sql                 # استعلامات وتجارب SQL
+├── Dockerfile                    # Backend Docker build and run setup
+├── SQLQuery1.sql                 # SQL query samples and testing scripts
 ├── ECommrece/                    # ASP.NET Core Web API
 │   ├── Controllers/
 │   │   └── FControllers/         # Auth, Users, Products, Categories,
 │   │                              # Cart, Orders, Payments, Reviews, Images
 │   ├── Data/
-│   │   ├── AppDbContext.cs        # DbContext و DbSet لكل كيانات النظام
-│   │   └── DbSeeder.cs            # تهيئة البيانات الأولية
-│   ├── DTOs/                      # نماذج الطلب والاستجابة لكل feature
-│   ├── Migrations/                # Entity Framework Core migrations
+│   │   ├── AppDbContext.cs        # EF Core DbContext and DbSets
+│   │   └── DbSeeder.cs            # Initial database seed logic
+│   ├── DTOs/                      # Request/response models per feature
+│   ├── Migrations/                # EF Core migrations
 │   ├── Models/                    # User, Product, Category, Cart, Order,
-│   │                              # Payment, Review وغيرها
-│   ├── Program.cs                 # تسجيل الخدمات وMiddleware وتشغيل API
-│   ├── appsettings.json           # إعدادات قاعدة البيانات وJWT
-│   └── ECommerce.csproj           # حزم وإعدادات مشروع .NET
+│   │                              # Payment, Review, and related entities
+│   ├── Program.cs                 # Service registration, middleware, app startup
+│   ├── appsettings.json           # Database and JWT configuration
+│   └── ECommerce.csproj           # .NET project configuration
 ├── ecommerce-frontend/            # Angular application
 │   ├── src/app/
-│   │   ├── components/            # Navbar وFooter
-│   │   ├── guards/                # authGuard وadminGuard
-│   │   ├── interceptors/          # إضافة JWT للطلبات
-│   │   ├── models/                # نماذج TypeScript
-│   │   ├── pages/                 # صفحات المستخدم والإدارة
-│   │   ├── services/              # خدمات Auth, Products, Cart, Orders,
-│   │   │                            # Payments, Reviews وغيرها
-│   │   ├── app.routes.ts          # مسارات التطبيق والحماية
-│   │   └── app.ts                 # Root component
+│   │   ├── components/            # Navbar and Footer
+│   │   ├── guards/                # authGuard and adminGuard
+│   │   ├── interceptors/          # JWT request injection
+│   │   ├── models/                # TypeScript models
+│   │   ├── pages/                 # User and admin pages
+│   │   ├── services/              # Auth, Products, Cart, Orders,
+│   │   │                            # Payments, Reviews, and more
+│   │   ├── app.routes.ts          # Application routing and route protection
+│   │   └── app.ts                 # Root application component
 │   ├── angular.json
 │   ├── package.json
-│   └── README.md                  # تعليمات Angular الافتراضية
-└── info/
-    ├── E-Commrce.txt              # توثيق business flow وقواعد النظام
-    └── ER-Digrame.png             # مخطط علاقات قاعدة البيانات
+│   └── README.md                  # Angular default setup guide
+├── info/
+│   ├── E-Commrce.txt              # Business flow and system rules
+│   └── ER-Digrame.png             # Database ER diagram
+└── README.md                     # Project documentation
 ```
 
-## المسارات الأساسية في الواجهة
+## Main Routes
 
-| المسار | الاستخدام | الحماية |
+| Route | Purpose | Access |
 |---|---|---|
-| `/` | الصفحة الرئيسية واستعراض المنتجات | عامة |
-| `/login` | تسجيل الدخول | عامة |
-| `/signup` | إنشاء حساب | عامة |
-| `/products/:id` | تفاصيل المنتج | عامة |
-| `/cart` | سلة المستخدم | مستخدم مسجل |
-| `/checkout` | إنشاء الطلب | مستخدم مسجل |
-| `/orders` | قائمة الطلبات | مستخدم مسجل |
-| `/orders/:id` | تفاصيل الطلب | مستخدم مسجل |
-| `/payment/:orderId` | الدفع | مستخدم مسجل |
-| `/admin` | لوحة الإدارة | مستخدم مسجل + Admin |
-| `/admin/products` | إدارة المنتجات | Admin |
-| `/admin/categories` | إدارة التصنيفات | Admin |
-| `/admin/orders` | إدارة الطلبات | Admin |
-| `/admin/users` | إدارة المستخدمين | Admin |
+| `/` | Home page / product listing | Public |
+| `/login` | Sign in | Public |
+| `/signup` | Create account | Public |
+| `/products/:id` | Product details | Public |
+| `/cart` | User cart | Authenticated user |
+| `/checkout` | Checkout | Authenticated user |
+| `/orders` | Orders list | Authenticated user |
+| `/orders/:id` | Order details | Authenticated user |
+| `/payment/:orderId` | Payment page | Authenticated user |
+| `/admin` | Admin dashboard | Authenticated + Admin |
+| `/admin/products` | Product management | Admin |
+| `/admin/categories` | Category management | Admin |
+| `/admin/orders` | Order management | Admin |
+| `/admin/users` | User management | Admin |
 
-## تشغيل المشروع محلياً
+## Run the Project Locally
 
-### المتطلبات
+### Requirements
 
-- .NET SDK 9.0 أو أحدث.
-- Node.js وnpm.
-- SQL Server محلي أو SQL Server متاح عبر الشبكة.
-- Angular CLI 20 (اختياري، يمكن استخدام `npm` scripts).
+- .NET SDK 9.0+
+- Node.js and npm
+- SQL Server instance
+- Angular CLI (optional, available via npm scripts)
 
-### تشغيل الـ Backend
+### Backend Setup
 
-1. عدّل connection string في `ECommrece/appsettings.json` بما يناسب إعداد SQL Server لديك.
-2. من مجلد المشروع الخلفي شغّل:
+1. Update the connection string in `ECommrece/appsettings.json` to match your SQL Server setup.
+2. Run:
 
 ```bash
 cd ECommrece
@@ -143,11 +144,11 @@ dotnet ef database update
 dotnet run
 ```
 
-سيقوم التطبيق بتسجيل الخدمات، الاتصال بقاعدة البيانات، وتشغيل `DbSeeder` عند بدء التشغيل. تتوفر أيضاً ملفات HTTP وOpenAPI لاختبار الـ API أثناء التطوير.
+The app will register services, connect to SQL Server, and run `DbSeeder` on startup. OpenAPI and HTTP files are also included for API exploration during development.
 
-### تشغيل الـ Frontend
+### Frontend Setup
 
-في طرفية أخرى:
+In a separate terminal:
 
 ```bash
 cd ecommerce-frontend
@@ -155,19 +156,19 @@ npm install
 npm start
 ```
 
-ثم افتح:
+Then open:
 
 ```text
 http://localhost:4200
 ```
 
-أو استخدم مباشرة:
+Or run:
 
 ```bash
 ng serve
 ```
 
-### بناء واختبار الواجهة
+### Build and Test Frontend
 
 ```bash
 cd ecommerce-frontend
@@ -175,37 +176,37 @@ npm run build
 npm test
 ```
 
-أمر الاختبارات يستخدم Jasmine وKarma. أما اختبارات end-to-end فتحتاج إلى إضافة framework مناسب لأن Angular CLI لا يضم إطار E2E افتراضياً.
+The frontend testing setup uses Jasmine and Karma. End-to-end tests are not configured by default, so additional tooling would be required if you want E2E coverage.
 
-## تشغيل Backend باستخدام Docker
+## Docker Setup
 
-يبني Dockerfile تطبيق ASP.NET Core باستخدام .NET 9 ويشغله على المنفذ `10000`:
+The repository includes a Dockerfile for the backend ASP.NET Core app:
 
 ```bash
 docker build -t ecommerce-api .
 docker run --rm -p 10000:10000 ecommerce-api
 ```
 
-يمكن الوصول إلى التطبيق عبر:
+The application will be available at:
 
 ```text
 http://localhost:10000
 ```
 
-تأكد من توفير اتصال SQL Server مناسب للحاوية، وعدم الاعتماد على `Server=.` إذا كانت قاعدة البيانات تعمل خارج الحاوية إلا بعد تعديل إعداد الاتصال.
+Note: if the database runs outside the container, update the connection string accordingly.
 
-## إعدادات البيئة والأمان
+## Security and Configuration
 
-الإعدادات الحالية موجودة في `ECommrece/appsettings.json` وتشمل:
+Configuration values are defined in `ECommrece/appsettings.json`, including:
 
 - `ConnectionStrings:DefaultConnection`
 - `Jwt:Key`
 - `Jwt:Issuer`
 - `Jwt:Audience`
 
-**تنبيه أمني:** لا تضع مفاتيح JWT أو كلمات مرور قاعدة البيانات الحقي��ية داخل Git. يجب نقلها إلى User Secrets أو متغيرات بيئية أو Secret Manager قبل النشر، وتغيير أي secret سبق رفعه إلى المستودع.
+> Important: do not commit real production secrets. Store them in user secrets, environment variables, or a secure secret manager before deployment.
 
-مثال عام لتشغيل المشروع مع إعدادات خارجية:
+Example:
 
 ```bash
 dotnet user-secrets init
@@ -213,31 +214,31 @@ dotnet user-secrets set "Jwt:Key" "replace-with-a-long-random-secret"
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "your-connection-string"
 ```
 
-## ملاحظات معمارية
+## Architectural Notes
 
-- `Program.cs` يفعّل CORS للواجهة، JWT authentication، SQL Server عبر `AppDbContext`، وتجاهل دورات المراجع في JSON.
-- `AppDbContext` يعرّف جداول المستخدمين والمنتجات والتصنيفات والسلال والطلبات والمدفوعات والتقييمات والصور.
-- الـ DTOs تفصل نماذج الـ API عن كيانات قاعدة البيانات.
-- `authGuard` يحمي الصفحات التي تتطلب تسجيل الدخول، بينما `adminGuard` يحمي لوحة الإدارة.
-- `jwt.interceptor.ts` يضيف التوكن إلى الطلبات الصادرة من Angular.
-- الواجهة تستخدم نظام تصميم داكن يعتمد على CSS variables وGlassmorphism، مع حالات للأزرار والتنبيهات والجداول وloading skeletons.
+- `Program.cs` enables CORS, JWT authentication, SQL Server integration via `AppDbContext`, and JSON reference-cycle handling.
+- `AppDbContext` defines the main database sets for users, products, categories, carts, orders, payments, reviews, and images.
+- DTOs separate API request/response models from database entities.
+- `authGuard` protects authenticated routes, while `adminGuard` protects the admin area.
+- `jwt.interceptor.ts` automatically attaches the JWT token to outgoing requests.
+- The frontend uses a dark-themed design system based on CSS variables and glassmorphism styling.
 
-## ملفات التوثيق
+## Documentation Files
 
-- [Business Flow والتفاصيل التشغيلية](info/E-Commrce.txt)
+- [Business Flow and System Rules](info/E-Commrce.txt)
 - [ER Diagram](info/ER-Digrame.png)
-- [تعليمات تشغيل Angular](ecommerce-frontend/README.md)
+- [Angular Setup Guide](ecommerce-frontend/README.md)
 
-## تحسينات مقترحة قبل الإنتاج
+## Suggested Improvements Before Production
 
-- فصل أسرار JWT واتصال قاعدة البيانات عن ملفات الإعدادات المرفوعة للمستودع.
-- إضافة ملف إعدادات للبيئات المختلفة، مثل development وproduction.
-- إضافة اختبارات Backend للـ controllers وقواعد المخزون والدفع.
-- إضافة اختبارات تكامل لمسار `Cart → Order → Payment`.
-- توثيق endpoints وطلبات/استجابات الـ API بشكل كامل في OpenAPI.
-- إضافة CI لتشغيل `dotnet build` و`npm run build` والاختبارات تلقائياً.
-- إضافة معالجة مركزية للأخطاء وlogging مناسب للإنتاج.
+- Move JWT and DB secrets out of version-controlled config files.
+- Add environment-specific configuration for development and production.
+- Add backend tests for controllers and order/payment workflows.
+- Add integration tests for the `Cart → Order → Payment` flow.
+- Improve API documentation and request/response examples in OpenAPI.
+- Add CI to run `dotnet build`, `npm run build`, and tests automatically.
+- Add centralized error handling and production logging.
 
-## الترخيص
+## License
 
-لم يتم تحديد ترخيص للمشروع حتى الآن.
+No explicit license has been defined for this project yet.
