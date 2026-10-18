@@ -29,17 +29,20 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: ecommerce-frontend/package-lock.json
 
       - name: Install dependencies
+        working-directory: ecommerce-frontend
         run: npm ci
 
       - name: Build Angular
-        run: npx ng build --configuration production --base-href=/e-Commerce/
+        working-directory: ecommerce-frontend
+        run: npm run build -- --base-href=/e-Commerce/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: ecommerce-frontend/dist/ecommerce-frontend/browser
 
   deploy:
     needs: build
